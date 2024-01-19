@@ -10,7 +10,7 @@ import humidity_icon from "../../assets/humidity.png";
 import rain_icon from "../../assets/rain.png";
 import snow_icon from "../../assets/snow.png";
 import wind_icon from "../../assets/wind.png";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import {
     Card,
     CardContent,
@@ -21,7 +21,7 @@ import { Input } from "@/components/ui/input";
 import Layout from "@/layouts";
 import Head from "next/head";
 import { NextPageWithLayout } from "../_app";
-import { GetServerSideProps, NextPage } from "next";
+import { StaticImport } from "next/dist/shared/lib/get-img-props";
 
 interface WeatherData {
     main: {
@@ -41,12 +41,12 @@ interface WeatherPageProps {
     initialWeatherData: WeatherData;
 }
 
-const WeatherPage: NextPage<WeatherPageProps> = ({
+const WeatherPage = ({
     initialWeatherData,
 }: {
     initialWeatherData: WeatherData;
 }) => {
-    const [weatherIcon, setWeatherIcon] = useState<string>(cloud_icon);
+    const [weatherIcon, setWeatherIcon] = useState<any>();
     const [humidity, setHumidity] = useState<number | null>(null);
     const [windSpeed, setWindSpeed] = useState<number | null>(null);
     const [temperature, setTemperature] = useState<number | null>(null);
@@ -80,7 +80,7 @@ const WeatherPage: NextPage<WeatherPageProps> = ({
         }
     };
 
-    const getWeatherIcon = (icon: string): string => {
+    const getWeatherIcon = (icon: string): StaticImageData => {
         switch (icon) {
             case "01d":
             case "01n":
@@ -126,23 +126,15 @@ const WeatherPage: NextPage<WeatherPageProps> = ({
                         type="text"
                         placeholder="City"
                         className="userInput flex w-96 h-20 bg-neutral-100 border-none outline-none rounded-3xl pl-10 text-gray-700 text-xl font-normal"
-                        suppressHydrationWarning
                     />
                     <div
                         className="search-icon flex justify-center items-center w-20 h-20 bg-neutral-100 rounded-full cursor-pointer"
                         onClick={handleSearch}
                     >
-                        <Image
-                            src={search_icon}
-                            alt=""
-                            suppressHydrationWarning
-                        />
+                        <Image src={search_icon} alt="" />
                     </div>
                 </CardHeader>
-                <CardContent
-                    className="weather-image mt-7 flex justify-center"
-                    suppressHydrationWarning
-                >
+                <CardContent className="weather-image mt-7 flex justify-center">
                     <Image src={weatherIcon} alt="" />
                 </CardContent>
                 <CardDescription className="weather-temp flex h-16 justify-center text-white text-6xl font-normal">
@@ -170,7 +162,18 @@ const WeatherPage: NextPage<WeatherPageProps> = ({
     );
 };
 
-WeatherPage.getLayout = function getLayout(page) {
+WeatherPage.getLayout = function getLayout(
+    page:
+        | string
+        | number
+        | boolean
+        | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+        | Iterable<React.ReactNode>
+        | React.ReactPortal
+        | React.PromiseLikeOfReactNode
+        | null
+        | undefined
+) {
     return <Layout>{page}</Layout>;
 };
 
@@ -182,6 +185,8 @@ export const getServerSideProps = async () => {
     try {
         const response = await axios.get<WeatherData>(url);
         const initialWeatherData = response.data;
+
+        console.log(response);
 
         return {
             props: {
