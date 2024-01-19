@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import Layout from "@/layouts";
 import Head from "next/head";
 import { NextPageWithLayout } from "../_app";
+import { GetServerSideProps, NextPage } from "next";
 
 interface WeatherData {
     main: {
@@ -36,7 +37,11 @@ interface WeatherData {
     }[];
 }
 
-const WeatherPage: NextPageWithLayout = ({
+interface WeatherPageProps {
+    initialWeatherData: WeatherData;
+}
+
+const WeatherPage: NextPage<WeatherPageProps> = ({
     initialWeatherData,
 }: {
     initialWeatherData: WeatherData;
