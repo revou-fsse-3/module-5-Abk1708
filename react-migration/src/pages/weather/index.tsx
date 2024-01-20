@@ -114,7 +114,7 @@ const WeatherPage = ({
             <Head>
                 <title>Weather Page</title>
             </Head>
-            <Card className="container flex flex-col items-center w-cstatic h-hstatic m-auto mt-75px rounded-3xl bg-gradient-to-b from-sky-500 to-indigo-500">
+            <Card className="container flex flex-col items-center w-cstatic h-hstatic m-auto mt-2.5 rounded-3xl bg-gradient-to-b from-sky-500 to-indigo-500">
                 <CardHeader className="card-header flex flex-row justify-center gap-3.5 pt-10 ">
                     <Input
                         type="text"
