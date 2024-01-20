@@ -20,8 +20,6 @@ import {
 import { Input } from "@/components/ui/input";
 import Layout from "@/layouts";
 import Head from "next/head";
-import { NextPageWithLayout } from "../_app";
-import { StaticImport } from "next/dist/shared/lib/get-img-props";
 
 interface WeatherData {
     main: {
@@ -35,10 +33,6 @@ interface WeatherData {
     weather: {
         icon: string;
     }[];
-}
-
-interface WeatherPageProps {
-    initialWeatherData: WeatherData;
 }
 
 const WeatherPage = ({
@@ -120,7 +114,7 @@ const WeatherPage = ({
             <Head>
                 <title>Weather Page</title>
             </Head>
-            <Card className="container flex flex-col items-center w-2/5 h-card m-auto mt-75px rounded-3xl bg-gradient-to-b from-sky-500 to-indigo-500">
+            <Card className="container flex flex-col items-center w-cstatic h-hstatic m-auto mt-75px rounded-3xl bg-gradient-to-b from-sky-500 to-indigo-500">
                 <CardHeader className="card-header flex flex-row justify-center gap-3.5 pt-10 ">
                     <Input
                         type="text"
@@ -143,7 +137,7 @@ const WeatherPage = ({
                 <CardDescription className="weather-location flex h-16 justify-center text-white text-6xl font-normal">
                     {location}
                 </CardDescription>
-                <CardContent className="data-container mt-14 text-white flex justify-center">
+                <CardContent className="data-container mt-8 text-white flex justify-center">
                     <CardContent className="element m-auto flex items-start gap-3.5">
                         <Image src={humidity_icon} alt="" className="icon" />
                         <CardDescription className="data text-2xl font-normal w-52 text-white">

@@ -1,6 +1,5 @@
 import Layout from "@/layouts";
 import Head from "next/head";
-import { NextPageWithLayout } from "./_app";
 import {
     ReactElement,
     JSXElementConstructor,
@@ -15,7 +14,7 @@ const Home = () => {
             <Head>
                 <title>Home Page</title>
             </Head>
-            <div className="flex flex-col items-center justify-center h-hnavbar w-wnavbar">
+            <div className="flex flex-col items-center justify-center h-hnavbar w-wnavbar ">
                 <h1 className="pb-12 font-serif text-6xl text-white">
                     Welcome to the Weather App
                 </h1>

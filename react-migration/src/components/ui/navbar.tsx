@@ -2,7 +2,7 @@ import Link from "next/link";
 
 const Navbar = () => {
     return (
-        <nav className="bg-teal-700 bg-opacity-30" suppressHydrationWarning>
+        <nav className="bg-teal-700 bg-opacity-30">
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
                 <div className="relative flex h-16 items-center justify-between">
                     {/* ... other code ... */}
