@@ -1,6 +1,6 @@
 // pages/weather.tsx
 
-import React, { useState, useEffect, ReactNode } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import search_icon from "../../assets/search.png";
 import clear_icon from "../../assets/clear.png";
@@ -20,6 +20,9 @@ import {
 import { Input } from "@/components/ui/input";
 import Layout from "@/layouts";
 import Head from "next/head";
+import router, { useRouter } from "next/router";
+import { NextPageWithLayout } from "../_app";
+import { GetServerSidePropsContext } from "next";
 
 interface WeatherData {
     main: {
@@ -40,24 +43,26 @@ const WeatherPage = ({
 }: {
     initialWeatherData: WeatherData;
 }) => {
+    const router = useRouter();
+
     const [weatherIcon, setWeatherIcon] = useState<any>();
     const [humidity, setHumidity] = useState<number | null>(null);
     const [windSpeed, setWindSpeed] = useState<number | null>(null);
     const [temperature, setTemperature] = useState<number | null>(null);
     const [location, setLocation] = useState<string | null>(null);
 
-    // useEffect(() => {
-    //     if (initialWeatherData) {
-    //         setHumidity(initialWeatherData.main.humidity);
-    //         setWindSpeed(Math.floor(initialWeatherData.wind.speed));
-    //         setTemperature(Math.floor(initialWeatherData.main.temp));
-    //         setLocation(initialWeatherData.name);
-    //         setWeatherIcon(getWeatherIcon(initialWeatherData.weather[0].icon));
-    //     }
-    // }, [initialWeatherData]);
+    useEffect(() => {
+        if (initialWeatherData) {
+            setHumidity(initialWeatherData.main.humidity);
+            setWindSpeed(Math.floor(initialWeatherData.wind.speed));
+            setTemperature(Math.floor(initialWeatherData.main.temp));
+            setLocation(initialWeatherData.name);
+            setWeatherIcon(getWeatherIcon(initialWeatherData.weather[0].icon));
+        }
+    }, [initialWeatherData]);
 
     const fetchData = async (city: string) => {
-        const api_key = "73794e69bcc1eb17cba6a7eeb23e6d48";
+        const api_key = process.env.NEXT_PUBLIC_TOKEN!;
         const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=Metric&appid=${api_key}`;
 
         try {
@@ -114,7 +119,7 @@ const WeatherPage = ({
             <Head>
                 <title>Weather Page</title>
             </Head>
-            <Card className="container flex flex-col items-center w-cstatic h-hstatic m-auto mt-2.5 rounded-3xl bg-gradient-to-b from-sky-500 to-indigo-500">
+            <Card className="container flex flex-col items-center w-2/5 h-card m-auto mt-75px rounded-3xl bg-gradient-to-b from-sky-500 to-indigo-500">
                 <CardHeader className="card-header flex flex-row justify-center gap-3.5 pt-10 ">
                     <Input
                         type="text"
@@ -137,7 +142,7 @@ const WeatherPage = ({
                 <CardDescription className="weather-location flex h-16 justify-center text-white text-6xl font-normal">
                     {location}
                 </CardDescription>
-                <CardContent className="data-container mt-8 text-white flex justify-center">
+                <CardContent className="data-container mt-14 text-white flex justify-center">
                     <CardContent className="element m-auto flex items-start gap-3.5">
                         <Image src={humidity_icon} alt="" className="icon" />
                         <CardDescription className="data text-2xl font-normal w-52 text-white">
@@ -156,14 +161,27 @@ const WeatherPage = ({
     );
 };
 
-WeatherPage.getLayout = function getLayout(page: ReactNode) {
+WeatherPage.getLayout = function getLayout(
+    page:
+        | string
+        | number
+        | boolean
+        | React.ReactElement<any, string | React.JSXElementConstructor<any>>
+        | Iterable<React.ReactNode>
+        | React.ReactPortal
+        | React.PromiseLikeOfReactNode
+        | null
+        | undefined
+) {
     return <Layout>{page}</Layout>;
 };
 
-export const getServerSideProps = async () => {
-    const defaultCity = "London";
-    const api_key = "73794e69bcc1eb17cba6a7eeb23e6d48";
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${defaultCity}&units=Metric&appid=${api_key}`;
+export const getServerSideProps = async (
+    context: GetServerSidePropsContext
+) => {
+    const defaultCity = `${router.query.city}`;
+    const api_key = process.env.NEXT_PUBLIC_TOKEN!;
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${context.query.defaultCity}&units=Metric&appid=${context.query.api_key}`;
 
     try {
         const response = await axios.get<WeatherData>(url);
@@ -178,7 +196,11 @@ export const getServerSideProps = async () => {
         };
     } catch (error) {
         console.error("Error fetching initial weather data:", error);
-        throw error;
+        return {
+            props: {
+                initialWeatherData: null,
+            },
+        };
     }
 };
 
